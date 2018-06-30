@@ -15,14 +15,13 @@
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_output"
+        app:layout_constraintTop_toBottomOf="@+id/button"
         tools:listitem="@layout/fragment_movie" />
 
     <EditText
@@ -54,7 +53,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
 
-    <ScrollView
+    <TextView
+        android:id="@+id/tv_output"
         android:layout_width="wrap_content"
         android:layout_height="500dp"
         android:layout_marginEnd="8dp"
@@ -64,13 +64,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" >
-        <TextView
-            android:id="@+id/tv_output"
-            android:layout_width="wrap_content"
-            android:layout_height="500dp"
-            android:text="TextView" />
-    </ScrollView>
-
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        android:text="TextView" />
 
 </android.support.constraint.ConstraintLayout>

@@ -6,12 +6,10 @@ import mark.stanford.com.salesforceapp.data.DataObservable;
 
 public class SalesforceApplication extends Application {
     DataObservable dataObservable;
-
     @Override
     public void onCreate() {
         super.onCreate();
-
-        dataObservable = DataObservable.getInstance();
+        dataObservable = DataObservable.getInstance(getBaseContext());
     }
 
     public DataObservable getDataObservable() {

@@ -23,7 +23,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
     @Override
     public FavoriteRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_movie, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_favorite, parent, false);
         return new FavoriteRecyclerViewAdapter.ViewHolder(view);
     }
 
@@ -41,6 +41,11 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
     @Override
     public int getItemCount() {
         return movieList.size();
+    }
+
+    public void notifyDataSetChanged(List<Movie> favoritesList) {
+        this.movieList = favoritesList;
+        this.notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

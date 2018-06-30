@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
     @Override
     public void onListFavoriteClicked(Movie movie) {
         if(((SalesforceApplication)getApplication()).getDataObservable().getFavoritesList().contains(movie)){
-            ((SalesforceApplication)getApplication()).getDataObservable().getFavoritesList().remove(movie);
+            ((SalesforceApplication)getApplication()).getDataObservable().removeFavorite(movie);
         }else{
-            ((SalesforceApplication)getApplication()).getDataObservable().getFavoritesList().add(movie);
+            ((SalesforceApplication)getApplication()).getDataObservable().addFavorite(movie);
         }
         ((SalesforceApplication)getApplication()).getDataObservable().notifyObservers();
     }
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
                 case 0:
                     return MovieFragment.newInstance();
                 case 1:
-                    return FavoriteFragment.newInstance(1);
+                    return FavoriteFragment.newInstance();
                 default:
                     return MovieFragment.newInstance();
             }

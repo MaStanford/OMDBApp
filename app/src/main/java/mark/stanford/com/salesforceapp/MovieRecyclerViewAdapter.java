@@ -49,21 +49,15 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
         holder.checkBox.setChecked(favoritesList.contains(movieList.get(position)));
         Picasso.get().load(movieList.get(position).poster).into(holder.poster);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    mListener.onListItemClicked(holder.mItem);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onListItemClicked(holder.mItem);
             }
         });
 
-        holder.checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    mListener.onListFavoriteClicked(holder.mItem);
-                }
+        holder.checkBox.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onListFavoriteClicked(holder.mItem);
             }
         });
     }

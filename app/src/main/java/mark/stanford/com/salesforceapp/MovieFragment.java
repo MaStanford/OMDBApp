@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -28,6 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 import mark.stanford.com.salesforceapp.data.DataObservable;
 import mark.stanford.com.salesforceapp.models.Movie;
 import mark.stanford.com.salesforceapp.network.NetworkService;
+import mark.stanford.com.salesforceapp.network.NetworkUtils;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -79,6 +82,9 @@ public class MovieFragment extends Fragment implements Observer{
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new MovieRecyclerViewAdapter(getContext(), new ArrayList<Movie>(), mListener);
         recyclerView.setAdapter(adapter);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+        itemDecoration.setDrawable(getContext().getDrawable(R.drawable.hor_line));
+        recyclerView.addItemDecoration(itemDecoration);
 
         et = view.findViewById(R.id.editText);
         et.setImeActionLabel("Search", KeyEvent.KEYCODE_SEARCH);
@@ -125,6 +131,11 @@ public class MovieFragment extends Fragment implements Observer{
 
 
     private void searchMovieTitle(String title){
+        if(!NetworkUtils.hasConnection(getContext())){
+            Toast.makeText(getContext(), "Network Unavailable, search failed", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         //Clear and notify
         ((SalesforceApplication)getActivity().getApplication()).getDataObservable().clearMovies();
         notifyData();
