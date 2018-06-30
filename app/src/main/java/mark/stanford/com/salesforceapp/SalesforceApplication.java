@@ -2,17 +2,12 @@ package mark.stanford.com.salesforceapp;
 
 import android.app.Application;
 
-import mark.stanford.com.salesforceapp.data.DataObservable;
-
+/**
+ * I originally held some singletons here for data and persitance but decided against it
+ */
 public class SalesforceApplication extends Application {
-    DataObservable dataObservable;
     @Override
     public void onCreate() {
         super.onCreate();
-        dataObservable = DataObservable.getInstance(getBaseContext());
-    }
-
-    public DataObservable getDataObservable() {
-        return dataObservable;
     }
 }

@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import mark.stanford.com.salesforceapp.data.DataObservable;
 import mark.stanford.com.salesforceapp.models.Movie;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener {
@@ -81,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
 
     @Override
     public void onListFavoriteClicked(Movie movie) {
-        if(((SalesforceApplication)getApplication()).getDataObservable().getFavoritesList().contains(movie)){
-            ((SalesforceApplication)getApplication()).getDataObservable().removeFavorite(movie);
+        if(DataObservable.getInstance(this).getFavoritesList().contains(movie)){
+            DataObservable.getInstance(this).removeFavorite(movie);
         }else{
-            ((SalesforceApplication)getApplication()).getDataObservable().addFavorite(movie);
+            DataObservable.getInstance(this).addFavorite(movie);
         }
-        ((SalesforceApplication)getApplication()).getDataObservable().notifyObservers();
+        DataObservable.getInstance(this).notifyObservers();
     }
 
     private void showDetailDialog(String id){

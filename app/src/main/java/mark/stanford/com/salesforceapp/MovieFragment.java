@@ -112,7 +112,7 @@ public class MovieFragment extends Fragment implements Observer{
         tv = view.findViewById(R.id.tv_output);
         tv.setVisibility(View.INVISIBLE);
 
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().addObserver(this);
+        DataObservable.getInstance(getContext()).addObserver(this);
 
         if(savedInstanceState != null){
             searchTerm = savedInstanceState.getString("SearchTerm");
@@ -151,7 +151,7 @@ public class MovieFragment extends Fragment implements Observer{
         }
 
         //Clear and notify
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().clearMovies();
+        DataObservable.getInstance(getContext()).clearMovies();
         notifyData();
 
         tv.setVisibility(View.INVISIBLE);
@@ -248,15 +248,15 @@ public class MovieFragment extends Fragment implements Observer{
     }
 
     private void addMovies(List<Movie> movies) {
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().addMovies(movies);
+        DataObservable.getInstance(getContext()).addMovies(movies);
     }
 
     private void addMovie(Movie movie) {
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().addMovie(movie);
+        DataObservable.getInstance(getContext()).addMovie(movie);
     }
 
     private void notifyData() {
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().notifyObservers();
+        DataObservable.getInstance(getContext()).notifyObservers();
     }
 
 
@@ -275,7 +275,7 @@ public class MovieFragment extends Fragment implements Observer{
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().deleteObserver(this);
+        DataObservable.getInstance(getContext()).deleteObserver(this);
     }
 
     public static void hideKeyboardFrom(Context context, View view) {

@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mark.stanford.com.salesforceapp.data.DataObservable;
 import mark.stanford.com.salesforceapp.models.Movie;
 
@@ -45,7 +48,11 @@ public class MovieDetailDialogFragment extends DialogFragment {
             movieID = savedInstanceState.getString("id");
         }
 
-        for(Movie item : DataObservable.getInstance(getContext()).getFavoritesList()){
+        List<Movie> megaList = new ArrayList<>();
+        //These are immutable
+        megaList.addAll(DataObservable.getInstance(getContext()).getFavoritesList());
+        megaList.addAll(DataObservable.getInstance(getContext()).getMovieList());
+        for(Movie item : megaList){
             if(item.imdbID.equals(movieID)){
                 movie = item;
                 break;

@@ -22,7 +22,7 @@ import java.util.Observer;
  * <p/>
  */
 public class FavoriteFragment extends Fragment implements Observer {
-
+    private MovieFragment.OnListFragmentInteractionListener mListener;
     private FavoriteRecyclerViewAdapter adapter;
 
     public FavoriteFragment() {
@@ -41,7 +41,7 @@ public class FavoriteFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().addObserver(this);
+       DataObservable.getInstance(getContext()).addObserver(this);
 
         List<Movie> favorites = DataObservable.getInstance(getContext()).getFavoritesList();
 
@@ -50,7 +50,7 @@ public class FavoriteFragment extends Fragment implements Observer {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter = new FavoriteRecyclerViewAdapter(favorites);
+            adapter = new FavoriteRecyclerViewAdapter(favorites, mListener);
             recyclerView.setAdapter(adapter);
             DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
             itemDecoration.setDrawable(getContext().getDrawable(R.drawable.hor_line));
@@ -64,12 +64,18 @@ public class FavoriteFragment extends Fragment implements Observer {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof MovieFragment.OnListFragmentInteractionListener) {
+            mListener = (MovieFragment.OnListFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        ((SalesforceApplication)getActivity().getApplication()).getDataObservable().deleteObserver(this);
+        DataObservable.getInstance(getContext()).deleteObserver(this);
     }
 
     @Override

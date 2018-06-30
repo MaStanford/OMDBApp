@@ -16,9 +16,11 @@ import java.util.List;
 public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.ViewHolder> {
 
     private List<Movie> movieList;
+    MovieFragment.OnListFragmentInteractionListener listener;
 
-    public FavoriteRecyclerViewAdapter(List<Movie> items) {
+    public FavoriteRecyclerViewAdapter(List<Movie> items, MovieFragment.OnListFragmentInteractionListener mListener) {
         movieList = items;
+        listener = mListener;
     }
 
     @Override
@@ -29,6 +31,8 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
     @Override
     public void onBindViewHolder(final FavoriteRecyclerViewAdapter.ViewHolder holder, int position) {
+        holder.mItem = movieList.get(position);
+        holder.mView.setOnClickListener(v -> listener.onListItemClicked(holder.mItem));
         holder.mItem = movieList.get(position);
         holder.title.setText(movieList.get(position).title);
         holder.year.setText(movieList.get(position).year);
