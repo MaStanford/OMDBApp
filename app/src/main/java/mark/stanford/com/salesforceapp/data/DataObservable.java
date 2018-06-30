@@ -81,7 +81,7 @@ public class DataObservable extends Observable {
         favoritesList.add(movie);
         new Thread(() -> {
             FileUtils.saveObject(context, "FAVS", this.favoritesList);
-        });
+        }).start();
     }
 
     public void addFavorites(List<Movie> movies){
@@ -89,14 +89,14 @@ public class DataObservable extends Observable {
         favoritesList.addAll(movies);
         new Thread(() -> {
             FileUtils.saveObject(context, "FAVS", this.favoritesList);
-        });
+        }).start();
     }
 
     public void removeFavorite(Movie movie){
         this.favoritesList.remove(movie);
         new Thread(() -> {
             FileUtils.saveObject(context, "FAVS", "");
-        });
+        }).start();;
     }
 
     public void clearFavorites(){
@@ -104,7 +104,7 @@ public class DataObservable extends Observable {
         favoritesList.clear();
         new Thread(() -> {
             FileUtils.saveObject(context, "FAVS", "");
-        });
+        }).start();
     }
 
     public List<Movie> getFavoritesList() {

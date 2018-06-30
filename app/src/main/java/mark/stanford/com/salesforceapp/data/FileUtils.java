@@ -15,6 +15,14 @@ import java.lang.reflect.Type;
  * Quick and dirty way to persist a small amount of data when performance isnt an issue.
  * Serialize to a string into a text file, and deserialize from a text file
  * I'm using GSON to do the serialization/desrialization.
+ *
+ * If I had more time, I would either Use SQLite and make my own DAO, or use the new ROOM and livemodel
+ * Right now I'm using an observer on the data singleton and storing on the backgorund when it's mutated,
+ * With livemodel, I would observe and update the sqlite in better design.
+ *
+ * Without Room and LiveModel, I could use a sqlite DB and a contentprovider and all network calls would go the
+ *  content provider.
+ *  Fragments/Activities/Controllers would observe for changes in the contentprovider and update UI accordingly.
  */
 public class FileUtils {
     public static void saveObject(Context context, String fileName, Object object){
