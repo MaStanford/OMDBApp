@@ -1,7 +1,9 @@
 package mark.stanford.com.salesforceapp;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
 
     @Override
     public void onListItemClicked(Movie movie) {
-        Toast.makeText(this, "Show Detail for Move: " + movie.title, Toast.LENGTH_LONG).show();
+        showDetailDialog(movie.imdbID);
     }
 
     @Override
@@ -88,6 +90,19 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
             ((SalesforceApplication)getApplication()).getDataObservable().addFavorite(movie);
         }
         ((SalesforceApplication)getApplication()).getDataObservable().notifyObservers();
+    }
+
+    private void showDetailDialog(String id){
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        android.support.v4.app.Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        MovieDetailDialogFragment newFragment = MovieDetailDialogFragment.newInstance(id);
+        newFragment.show(ft, "dialog");
     }
 
 
