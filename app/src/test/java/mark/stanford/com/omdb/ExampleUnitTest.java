@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb;
 
 import org.junit.Test;
 

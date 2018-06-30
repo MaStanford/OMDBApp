@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("mark.stanford.com.salesforceapp", appContext.getPackageName());
+        assertEquals("mark.stanford.com.omdb", appContext.getPackageName());
     }
 }

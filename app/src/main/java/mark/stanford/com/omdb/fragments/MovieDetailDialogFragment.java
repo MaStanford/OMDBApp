@@ -1,4 +1,4 @@
-package mark.stanford.com.omdb;
+package mark.stanford.com.omdb.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
