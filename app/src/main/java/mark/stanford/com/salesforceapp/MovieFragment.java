@@ -3,6 +3,7 @@ package mark.stanford.com.salesforceapp;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -113,7 +114,20 @@ public class MovieFragment extends Fragment implements Observer{
 
         ((SalesforceApplication)getActivity().getApplication()).getDataObservable().addObserver(this);
 
+        if(savedInstanceState != null){
+            searchTerm = savedInstanceState.getString("SearchTerm");
+            if(searchTerm != null){
+                searchMovieTitle(searchTerm);
+            }
+        }
+
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("SearchTerm", searchTerm);
     }
 
     private Retrofit buildRetrofit(OkHttpClient client){
@@ -146,6 +160,9 @@ public class MovieFragment extends Fragment implements Observer{
                 .subscribeOn(Schedulers.newThread())
                 .flatMapIterable((x) -> {
                     totalPages = x.totalResults/ENTRIES_PER_PAGE;
+                    if(x.search.size() < 1){
+                        Toast.makeText(getContext(), "No Results found!", Toast.LENGTH_SHORT).show();
+                    }
                     return x.search;
                 })
                 .map(x -> x.imdbID)
@@ -227,8 +244,7 @@ public class MovieFragment extends Fragment implements Observer{
     }
 
     private void displayError(Throwable e) {
-        tv.setVisibility(View.VISIBLE);
-        tv.setText("Error fetching movies: " + e.getMessage());
+        Toast.makeText(getContext(), "Error fetching movies, try again.", Toast.LENGTH_LONG).show();
     }
 
     private void addMovies(List<Movie> movies) {

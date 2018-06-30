@@ -40,6 +40,11 @@ public class MovieDetailDialogFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.dialog_movie_details, container, false);
 
         Movie movie = null;
+
+        if(savedInstanceState != null){
+            movieID = savedInstanceState.getString("id");
+        }
+
         for(Movie item : DataObservable.getInstance(getContext()).getFavoritesList()){
             if(item.imdbID.equals(movieID)){
                 movie = item;
@@ -66,4 +71,9 @@ public class MovieDetailDialogFragment extends DialogFragment {
         return v;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("id", movieID);
+    }
 }
