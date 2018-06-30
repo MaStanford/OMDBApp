@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,19 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import mark.stanford.com.salesforceapp.data.DataObservable;
-import mark.stanford.com.salesforceapp.models.Movie;
+import mark.stanford.com.omdb.fragments.FavoriteFragment;
+import mark.stanford.com.omdb.fragments.MovieFragment;
+import mark.stanford.com.salesforceapp.R;
+import mark.stanford.com.omdb.data.DataObservable;
+import mark.stanford.com.omdb.models.Movie;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -36,17 +31,17 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));

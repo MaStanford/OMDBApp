@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

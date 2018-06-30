@@ -1,9 +1,8 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb.fragments;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,10 +27,12 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import mark.stanford.com.salesforceapp.data.DataObservable;
-import mark.stanford.com.salesforceapp.models.Movie;
-import mark.stanford.com.salesforceapp.network.NetworkService;
-import mark.stanford.com.salesforceapp.network.NetworkUtils;
+import mark.stanford.com.omdb.adapters.MovieRecyclerViewAdapter;
+import mark.stanford.com.omdb.network.RetroNetworkService;
+import mark.stanford.com.omdb.network.NetworkUtils;
+import mark.stanford.com.salesforceapp.R;
+import mark.stanford.com.omdb.data.DataObservable;
+import mark.stanford.com.omdb.models.Movie;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -47,7 +48,7 @@ public class MovieFragment extends Fragment implements Observer{
 
     private OnListFragmentInteractionListener mListener;
     private MovieRecyclerViewAdapter adapter;
-    private NetworkService networkService;
+    private RetroNetworkService networkService;
     private Retrofit retrofit;
     private TextView tv;
     private EditText et;
@@ -79,9 +80,9 @@ public class MovieFragment extends Fragment implements Observer{
 
         // Set the adapter
         Context context = view.getContext();
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new MovieRecyclerViewAdapter(getContext(), new ArrayList<Movie>(), mListener);
+        adapter = new MovieRecyclerViewAdapter(getContext(), new ArrayList<>(), mListener);
         recyclerView.setAdapter(adapter);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
         itemDecoration.setDrawable(getContext().getDrawable(R.drawable.hor_line));
@@ -106,20 +107,21 @@ public class MovieFragment extends Fragment implements Observer{
         });
 
         retrofit = buildRetrofit(new OkHttpClient());
-
         networkService = buildNetworkService();
 
         tv = view.findViewById(R.id.tv_output);
         tv.setVisibility(View.INVISIBLE);
 
-        DataObservable.getInstance(getContext()).addObserver(this);
 
+        //Saved State handling
         if(savedInstanceState != null){
             searchTerm = savedInstanceState.getString("SearchTerm");
             if(searchTerm != null){
                 searchMovieTitle(searchTerm);
             }
         }
+
+        DataObservable.getInstance(getContext()).addObserver(this);
 
         return view;
     }
@@ -133,14 +135,14 @@ public class MovieFragment extends Fragment implements Observer{
     private Retrofit buildRetrofit(OkHttpClient client){
         return new Retrofit.Builder()
                 .client(client)
-                .baseUrl(NetworkService.BASE_URI)
+                .baseUrl(RetroNetworkService.BASE_URI)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 
-    private NetworkService buildNetworkService(){
-        return retrofit.create(NetworkService.class);
+    private RetroNetworkService buildNetworkService(){
+        return retrofit.create(RetroNetworkService.class);
     }
 
 
@@ -285,7 +287,8 @@ public class MovieFragment extends Fragment implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
-        adapter.notifyDataSetChanged(((DataObservable)o).getMovieList(), ((DataObservable)o).getFavoritesList());
+        if(adapter != null)
+            adapter.notifyDataSetChanged(((DataObservable)o).getMovieList(), ((DataObservable)o).getFavoritesList());
     }
 
     public interface OnListFragmentInteractionListener {

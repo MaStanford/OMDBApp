@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import mark.stanford.com.salesforceapp.data.DataObservable;
-import mark.stanford.com.salesforceapp.models.Movie;
+import mark.stanford.com.omdb.adapters.FavoriteRecyclerViewAdapter;
+import mark.stanford.com.salesforceapp.R;
+import mark.stanford.com.omdb.data.DataObservable;
+import mark.stanford.com.omdb.models.Movie;
 
 import java.util.List;
 import java.util.Observable;
@@ -41,21 +43,20 @@ public class FavoriteFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
-       DataObservable.getInstance(getContext()).addObserver(this);
 
         List<Movie> favorites = DataObservable.getInstance(getContext()).getFavoritesList();
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter = new FavoriteRecyclerViewAdapter(favorites, mListener);
-            recyclerView.setAdapter(adapter);
-            DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
-            itemDecoration.setDrawable(getContext().getDrawable(R.drawable.hor_line));
-            recyclerView.addItemDecoration(itemDecoration);
-        }
+        Context context = view.getContext();
+        RecyclerView recyclerView = view.findViewById(R.id.list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        adapter = new FavoriteRecyclerViewAdapter(favorites, mListener);
+        recyclerView.setAdapter(adapter);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+        itemDecoration.setDrawable(getContext().getDrawable(R.drawable.hor_line));
+        recyclerView.addItemDecoration(itemDecoration);
+
+        DataObservable.getInstance(getContext()).addObserver(this);
 
         return view;
     }
@@ -80,6 +81,7 @@ public class FavoriteFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        adapter.notifyDataSetChanged(DataObservable.getInstance(getContext()).getFavoritesList());
+        if(adapter != null)
+         adapter.notifyDataSetChanged(DataObservable.getInstance(getContext()).getFavoritesList());
     }
 }

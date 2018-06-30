@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp.data;
+package mark.stanford.com.omdb.data;
 
 import android.content.Context;
 
@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import mark.stanford.com.salesforceapp.models.Movie;
-import mark.stanford.com.salesforceapp.models.Search;
+import mark.stanford.com.omdb.models.Search;
+import mark.stanford.com.omdb.models.Movie;
 
 public class DataObservable extends Observable {
 
@@ -27,11 +27,7 @@ public class DataObservable extends Observable {
     private List<Movie> favoritesList = new ArrayList<>();
 
     /**
-     * I was going to use the search results as the data for persisting and passing to the adapters,
-     * This mapping would've been used for details.  If val not there, then make network request for val.
-     * This could've let me do lazy fetching of the movie object which is much larger than the search object.
-     * In the onBind or something I would've made a async task or background task to fetch the data
-     *  and populate it when it returns.
+     * Maybe use a mapping of search objects to movie objects and lazily fetch the movie objects when needed???
      */
     private Map<Search, Movie> searchToMovieMap = new HashMap<>();
 

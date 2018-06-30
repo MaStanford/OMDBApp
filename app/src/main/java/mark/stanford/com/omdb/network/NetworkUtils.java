@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp.network;
+package mark.stanford.com.omdb.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

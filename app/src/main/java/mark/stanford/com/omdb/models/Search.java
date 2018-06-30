@@ -1,4 +1,4 @@
-package mark.stanford.com.salesforceapp.models;
+package mark.stanford.com.omdb.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

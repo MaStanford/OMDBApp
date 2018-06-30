@@ -1,12 +1,12 @@
-package mark.stanford.com.salesforceapp.network;
+package mark.stanford.com.omdb.network;
 
 import io.reactivex.Observable;
-import mark.stanford.com.salesforceapp.models.Movie;
-import mark.stanford.com.salesforceapp.models.MovieSearchResultWrapper;
+import mark.stanford.com.omdb.models.MovieSearchResultWrapper;
+import mark.stanford.com.omdb.models.Movie;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface NetworkService {
+public interface RetroNetworkService {
     String BASE_URI = "http://www.omdbapi.com/";
     String API_KEY = "c02b6340";
 

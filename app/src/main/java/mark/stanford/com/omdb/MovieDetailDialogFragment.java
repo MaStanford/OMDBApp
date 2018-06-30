@@ -1,6 +1,5 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -14,8 +13,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import mark.stanford.com.salesforceapp.data.DataObservable;
-import mark.stanford.com.salesforceapp.models.Movie;
+import mark.stanford.com.salesforceapp.R;
+import mark.stanford.com.omdb.data.DataObservable;
+import mark.stanford.com.omdb.models.Movie;
 
 public class MovieDetailDialogFragment extends DialogFragment {
 

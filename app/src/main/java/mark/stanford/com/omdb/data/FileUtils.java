@@ -1,10 +1,11 @@
-package mark.stanford.com.salesforceapp.data;
+package mark.stanford.com.omdb.data;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,7 +54,13 @@ public class FileUtils {
             ioe.printStackTrace ( ) ;
             return null;
         }
-        return new Gson().fromJson(objectString.toString(), klazz);
+
+        try {
+            return new Gson().fromJson(objectString.toString(), klazz);
+        }catch(Exception e){
+            deleteFile(context, fileName);
+            return null;
+        }
     }
 
     public static Object loadObject(Context context, String fileName, Type klazz){
@@ -72,6 +79,19 @@ public class FileUtils {
             ioe.printStackTrace ( ) ;
             return null;
         }
-        return new Gson().fromJson(objectString.toString(), klazz);
+        try {
+            return new Gson().fromJson(objectString.toString(), klazz);
+        }catch(Exception e){
+            deleteFile(context, fileName);
+            return null;
+        }
+
+    }
+
+    public static boolean deleteFile(Context context, String fileName){
+        String dir = context.getFilesDir().getAbsolutePath();
+        File file = new File(dir, fileName);
+        boolean isDeleted = file.delete();
+        return isDeleted;
     }
 }

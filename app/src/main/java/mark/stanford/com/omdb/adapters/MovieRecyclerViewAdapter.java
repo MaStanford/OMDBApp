@@ -1,46 +1,44 @@
-package mark.stanford.com.salesforceapp;
+package mark.stanford.com.omdb.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import mark.stanford.com.salesforceapp.MovieFragment.OnListFragmentInteractionListener;
-import mark.stanford.com.salesforceapp.models.Movie;
+import mark.stanford.com.omdb.fragments.MovieFragment;
+import mark.stanford.com.salesforceapp.R;
+import mark.stanford.com.omdb.models.Movie;
 
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Movie} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link MovieFragment.OnListFragmentInteractionListener}.
  */
-public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecyclerViewAdapter.ViewHolder> {
+public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieItemViewHolder> {
 
     private final Context context;
     private List<Movie> movieList;
     private List<Movie> favoritesList;
-    private final OnListFragmentInteractionListener mListener;
+    private final MovieFragment.OnListFragmentInteractionListener mListener;
 
-    public MovieRecyclerViewAdapter(Context context, List<Movie> items, OnListFragmentInteractionListener listener) {
+    public MovieRecyclerViewAdapter(Context context, List<Movie> items, MovieFragment.OnListFragmentInteractionListener listener) {
         this.context = context;
         movieList = items;
         mListener = listener;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_movie, parent, false);
-        return new ViewHolder(view);
+        return new MovieItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final MovieItemViewHolder holder, int position) {
         holder.mItem = movieList.get(position);
         holder.title.setText(movieList.get(position).title);
         holder.year.setText(movieList.get(position).year);
@@ -71,32 +69,5 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
         this.movieList = movies;
         this.favoritesList = favorites;
         super.notifyDataSetChanged();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final CheckBox checkBox;
-        public final TextView title;
-        public final TextView year;
-        public final TextView director;
-        public final TextView plot;
-        public final ImageView poster;
-        public Movie mItem;
-
-        public ViewHolder(View view) {
-            super(view);
-            mView = view;
-            checkBox = view.findViewById(R.id.checkBox);
-            title = (TextView) view.findViewById(R.id.title);
-            year = (TextView) view.findViewById(R.id.year);
-            director = (TextView) view.findViewById(R.id.director);
-            plot = (TextView) view.findViewById(R.id.plot);
-            poster = view.findViewById(R.id.poster);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + title.getText() + "'";
-        }
     }
 }

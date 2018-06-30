@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SalesforceApp</string>
+    <string name="app_name">OMDB Favorites</string>
     <string name="tab_text_1">Search</string>
     <string name="tab_text_2">Favorites</string>
     <string name="action_settings">Settings</string>
