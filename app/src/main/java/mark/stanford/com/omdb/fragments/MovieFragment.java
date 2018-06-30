@@ -121,6 +121,9 @@ public class MovieFragment extends Fragment implements Observer{
             return;
         }
 
+        //Clear the current results
+        DataObservable.getInstance(getContext()).clearMovies();
+
         //The big fun chain of operators in rxjava that replaces a couple lines of code using stream, observables and callbacks.
         omdbAPI.searchMovieTitle(searchTerm)
                 .subscribeOn(Schedulers.newThread())
