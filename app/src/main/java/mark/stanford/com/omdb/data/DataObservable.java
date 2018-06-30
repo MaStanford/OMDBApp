@@ -89,6 +89,7 @@ public class DataObservable extends Observable {
     }
 
     public void removeFavorite(Movie movie){
+        this.setChanged();
         this.favoritesList.remove(movie);
         new Thread(() -> {
             FileUtils.saveObject(context, "FAVS", "");

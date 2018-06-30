@@ -81,7 +81,8 @@ public class FavoriteFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(adapter != null)
-         adapter.notifyDataSetChanged(DataObservable.getInstance(getContext()).getFavoritesList());
+        if(adapter != null) {
+            adapter.notifyDataSetChanged(DataObservable.getInstance(getContext()).getFavoritesList());
+        }
     }
 }

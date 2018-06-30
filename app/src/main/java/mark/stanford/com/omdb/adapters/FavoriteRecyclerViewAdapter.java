@@ -16,7 +16,7 @@ import mark.stanford.com.salesforceapp.R;
 public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<MovieItemViewHolder> {
 
     private List<Movie> movieList;
-    MovieFragment.OnListFragmentInteractionListener listener;
+    private MovieFragment.OnListFragmentInteractionListener listener;
 
     public FavoriteRecyclerViewAdapter(List<Movie> items, MovieFragment.OnListFragmentInteractionListener mListener) {
         movieList = items;

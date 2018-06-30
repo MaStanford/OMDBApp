@@ -7,16 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +26,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import mark.stanford.com.omdb.adapters.MovieRecyclerViewAdapter;
-import mark.stanford.com.omdb.network.RetroNetworkService;
+import mark.stanford.com.omdb.network.OMDBApi;
 import mark.stanford.com.omdb.network.NetworkUtils;
 import mark.stanford.com.salesforceapp.R;
 import mark.stanford.com.omdb.data.DataObservable;
 import mark.stanford.com.omdb.models.Movie;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
@@ -48,11 +43,10 @@ public class MovieFragment extends Fragment implements Observer{
 
     private OnListFragmentInteractionListener mListener;
     private MovieRecyclerViewAdapter adapter;
-    private RetroNetworkService networkService;
-    private Retrofit retrofit;
-    private TextView tv;
     private EditText et;
     private Disposable dispoable;
+    private OMDBApi omdbAPI;
+
     private int totalPages = 0;
     private String searchTerm = "";
     public static final int ENTRIES_PER_PAGE = 10;
@@ -106,13 +100,6 @@ public class MovieFragment extends Fragment implements Observer{
             searchMovieTitle(searchTerm);
         });
 
-        retrofit = buildRetrofit(new OkHttpClient());
-        networkService = buildNetworkService();
-
-        tv = view.findViewById(R.id.tv_output);
-        tv.setVisibility(View.INVISIBLE);
-
-
         //Saved State handling
         if(savedInstanceState != null){
             searchTerm = savedInstanceState.getString("SearchTerm");
@@ -121,106 +108,24 @@ public class MovieFragment extends Fragment implements Observer{
             }
         }
 
+        omdbAPI = new OMDBApi();
+
         DataObservable.getInstance(getContext()).addObserver(this);
 
         return view;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("SearchTerm", searchTerm);
-    }
-
-    private Retrofit buildRetrofit(OkHttpClient client){
-        return new Retrofit.Builder()
-                .client(client)
-                .baseUrl(RetroNetworkService.BASE_URI)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-    }
-
-    private RetroNetworkService buildNetworkService(){
-        return retrofit.create(RetroNetworkService.class);
-    }
-
-
-    private void searchMovieTitle(String title){
+    private void searchMovieTitle(String searchTerm) {
         if(!NetworkUtils.hasConnection(getContext())){
             Toast.makeText(getContext(), "Network Unavailable, search failed", Toast.LENGTH_LONG).show();
             return;
         }
 
-        //Clear and notify
-        DataObservable.getInstance(getContext()).clearMovies();
-        notifyData();
-
-        tv.setVisibility(View.INVISIBLE);
-
-        networkService.searchMovies(title)
+        //The big fun chain of operators in rxjava that replaces a couple lines of code using stream, observables and callbacks.
+        omdbAPI.searchMovieTitle(searchTerm)
                 .subscribeOn(Schedulers.newThread())
-                .flatMapIterable((x) -> {
-                    totalPages = x.totalResults/ENTRIES_PER_PAGE;
-                    if(x.search.size() < 1){
-                        Toast.makeText(getContext(), "No Results found!", Toast.LENGTH_SHORT).show();
-                    }
-                    return x.search;
-                })
-                .map(x -> x.imdbID)
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<List<String>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        dispoable = d;
-                    }
-
-                    @Override
-                    public void onSuccess(List<String> searches) {
-                        fetchMovies(searches);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        displayError(e);
-                    }
-                });
-    }
-
-    private void searchMovieTitleWithPage(String title, int page){
-        //We don't clear and notify because this will just be adding on top
-        tv.setVisibility(View.INVISIBLE);
-
-        networkService.searchMoviesPage(title, page)
-                .subscribeOn(Schedulers.newThread())
-                .flatMapIterable((x) -> x.search)
-                .map(x -> x.imdbID)
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<List<String>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        dispoable = d;
-                    }
-
-                    @Override
-                    public void onSuccess(List<String> searches) {
-                        fetchMovies(searches);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        displayError(e);
-                    }
-                });
-    }
-
-    public void fetchMovies(List<String> movieIds){
-        io.reactivex.Observable.fromIterable(movieIds)
-                .observeOn(Schedulers.newThread())
-                .map((x) -> networkService.getMovie(x))
+                .map((searchResult) -> searchResult.imdbID)
+                .map((id) -> omdbAPI.fetchMovie(id))
                 .flatMap(x -> x)
                 .toList()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -238,15 +143,21 @@ public class MovieFragment extends Fragment implements Observer{
 
                     @Override
                     public void onError(Throwable e) {
+                        displayError(e);
                         e.printStackTrace();
-                        notifyData();
                     }
                 });
+    }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("SearchTerm", searchTerm);
     }
 
     private void displayError(Throwable e) {
         Toast.makeText(getContext(), "Error fetching movies, try again.", Toast.LENGTH_LONG).show();
+        Log.e("MARK", "displayError: " + e.getMessage());
     }
 
     private void addMovies(List<Movie> movies) {
@@ -260,7 +171,6 @@ public class MovieFragment extends Fragment implements Observer{
     private void notifyData() {
         DataObservable.getInstance(getContext()).notifyObservers();
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -278,6 +188,9 @@ public class MovieFragment extends Fragment implements Observer{
         super.onDetach();
         mListener = null;
         DataObservable.getInstance(getContext()).deleteObserver(this);
+        if(dispoable != null) {
+            dispoable.dispose();
+        }
     }
 
     public static void hideKeyboardFrom(Context context, View view) {
